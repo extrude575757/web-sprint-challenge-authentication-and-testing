@@ -74,6 +74,51 @@ Submit via Codegrade. Remember to add a query string to your Webhook's Payload U
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+
+The main difference is that sessions will do more work on a server than a client. And with Json web-token based applications most of the information is stored on the client to authenticate them instead of a server. A json webtoken will have information on the header payload and signature  while a json web-token is just a string of random alpha-numeric characters to partain to the sessions ID. It seems a session will have less sql to run as well since its only looking up an id, while json tokens are a hash which includes alot more information than just the session id. 
+
+Sessions are server oriented to take care of all the authentication. The client does not have much of an idea of what’s going on. After the user logs in, the server will create a session for the user and store the session data in the server memory.
+The session ID is stored in a cookie in the client’s browser. While the user stays logged in, the cookie would be sent along with each subsequent request.
+The server can then compare the session ID stored on the cookie against the session information stored in the memory to verify the user’s identity and send responses. On logging out, the session gets deleted from the database.
+
+  Json web tokens and sessions for authnetication are both HTTP enabled.
+  In a token-based application, the server creates a signed token and sends the token back to the client. The JWT is stored on the client’s side (usually in local storage) and sent as a header for every subsequent request.
+  The server would then decode the JWT, and, if the token is valid, processes the request and sends a response. When the user logs out, the token is destroyed on the client’s side without having any interaction with the server.
+
+  JSON Web Token (JWT) is an open standard (RFC 7519) for securely transmitting information between endpoints as JSON objects. It is mainly used to prove that the sent data was actually created by an authentic source.
+JWT consists of three concatenated Base64url-encoded strings, separated by dots (.). These are Header Payload and Signature
+A JWT typically looks like:
+ xxxxx.yyyyy.zzzzz
+Header
+The first part typically consists of two parts; the type of the token, which is JWT, and the signing algorithm being used such as HMAC SHA256 or RSA. If you don’t define the algorithm, it uses HS256 by default.
+For example:
+      {
+      “alg”: “HS256”,
+      “typ”: “JWT”
+      }
+Payload
+The second part consists of a set of claims that are basically verifiable security statements, such as the identity of the user and the permissions they are allowed.
+There are three types of claims: registered, public, and private claims. Note that the claim names are short as JWT is meant to be compact for fast requests.
+And wait! Be careful not to put sensitive data such as passwords in your payload as this can easily be decoded.
+An example payload could be:
+      {
+      “sub”: “123456789”,
+      “name”: “Anamika Ahmed”,
+      “admin”: true
+      }
+Signature
+The last part is the signature which is the sum of the encoded header, the encoded payload, a secret, and lastly, the algorithm which is specified in the header.
+For example, if you want to use the HS256 algorithm, the signature would be created in the following way:
+HS256(
+base64UrlEncode(header) + “.” +
+base64UrlEncode(payload),
+secret)
+The signature is used to verify the message wasn’t changed along the way. It is the most important part of the JWT structure as header and payload can easily be decoded, but not the signature.
+The signature is not publicly readable because it is encrypted with a secret key. Unless someone has the secret key, they cannot decrypt this information.
+
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+
+
+
 3. How are unit tests different from integration and end-to-end testing?
 4. How does _Test Driven Development_ change the way we write applications and tests?
