@@ -118,7 +118,28 @@ The signature is not publicly readable because it is encrypted with a secret key
 
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
 
+Bcrypt helps encrypt passwords with the blowfish algorithm. It will encrypt the whole cookie needed for the password into a random string of characters. When encryption is used with bcrypt it will be a string that looks like 
+
+    
+     $10
+$2b$[cost]$NLHSKLDHFLKSJDLSLDKFJL.SKDJFKJSLDKFJSLADKJFKLD
+algo cost  \  22  salt          /\  31 hash
+
+
+The $ and . (dot) seperate the contents of the bcrypt hash. The first section is the algorythm. The 2nd section is the cost which is where it tells the processor how many times to recursivly loop threw the hash. Increasing that can increase the security but will also increase the time needed to make it functional. The third part is the salt which is then seperated with the . (dot) to show what the hash is for that chipher. 
+
 
 
 3. How are unit tests different from integration and end-to-end testing?
+
+The main difference between integration testing and unit testing is unit tests are not flaky and are quicker tests than end-to-end testings. Its easier to know if something is broken or not since the tests are instant. 
+
+  Integration testing requires environment variables and is good for cross compatability while devloping. End-to-end tests are good at capturing certain kinds of bugs, but their biggest drawback is that they cannot pin-point the root cause of failure. Anything in the entire flow could have contributed to the error. In large and complex systems, it’s like finding a needle in the haystack: you’ll find the root cause, but it will take time. Because unit tests focus on small modules that are tested independently, they can identify the lines of code that caused the failure with laser-sharp accuracy, which can save a lot of time.
+
+Another nice thing about unit tests is that they always work, and they work fast. Unlike end-to-end tests that rely on external components, unit tests are not flaky. If I can build a project on my machine, I should be able to run its unit tests. In contrast, end-to-end tests would fail if some external component, like a database or a messaging queue, is not available or cannot be reached. And they can take a lvery ong time to run.
+
+Unit tests allow developers to refactor and add new features with confidence. When I’m refactoring a complex project that has well-written unit tests, I run them often, usually after every small change. In a matter of few seconds, I know whether I broke something or not. Even better, a failing test usually prints a nice message telling me what broke: whether some GuardAssertion failed or the expected response was off by one, helps me isolate the failure.
+
 4. How does _Test Driven Development_ change the way we write applications and tests?
+
+It helps to insure the code is doing what the code says it does. It is very important for debugging purposes since it can leave additional logs and error messages to find inside information on any bugs within the software. Test driven devlopment also speeds up the production of the application by automated tests that can be ran upon refresh. With testing end-users can be assured the application will run exactly as inteded. . 
