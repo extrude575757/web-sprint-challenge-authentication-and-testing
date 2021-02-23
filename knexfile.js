@@ -1,3 +1,6 @@
+// require("dotenv").config();
+const pgConnection = process.env.NODE_ENV || "postgresql://postgres@localhost/auth";
+// require('dotenv').config({path: './'});
 // do not make changes to this file
 const sharedConfig = {
   client: 'sqlite3',
@@ -15,5 +18,19 @@ module.exports = {
   testing: {
     ...sharedConfig,
     connection: { filename: './data/test.db3' },
+  },
+  production: {
+    client: "pg",
+    connection: pgConnection,
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      directory: "./database/migrations",
+    },
+    seeds: {
+      directory: "./database/seeds",
+    },
   },
 };
