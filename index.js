@@ -1,5 +1,5 @@
 
-require("dotenv").config({path: './'});
+require("dotenv");
 const server = require('./api/server.js');
 const PORT = process.env.NODE_ENV || 3300;
 server.listen(PORT, () => {
