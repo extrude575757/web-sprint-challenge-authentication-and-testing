@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
       } else {
         console.log('Within valid restricted middleware autherization token next call',req);
         req.decodedJwt = decoded;
-        next()
+        next(tkn)
       }
     })
   } else {
