@@ -1,5 +1,5 @@
 // require("dotenv").config();
-const pgConnection = process.env.NODE_ENV || "postgresql://postgres@localhost/auth";
+const pgConnection = process.env.DATABASEURL || "postgresql://postgres@localhost/auth";
 // require('dotenv').config({path: './'});
 // do not make changes to this file
 const sharedConfig = {
@@ -27,10 +27,10 @@ module.exports = {
       max: 10,
     },
     migrations: {
-      directory: "./database/migrations",
+      directory: "./data/migrations",
     },
     seeds: {
-      directory: "./database/seeds",
+      directory: "./data/seeds",
     },
   },
 };
