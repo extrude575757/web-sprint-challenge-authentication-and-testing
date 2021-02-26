@@ -33,32 +33,61 @@ const { isValid } = require("../users/users-service.js");
       the response body should include a string exactly as follows: "username taken".
   */
 
-router.post("/register", (req, res) => {
+router.post("/register", (req, res,next) => {
   const credentials = req.body;
+  console.log(credentials)
 
-      if (isValid(credentials)) {
-          const rounds = process.env.BCRYPT_ROUNDS || 8;
+  Users.add(req.body)
+    .then(u =>{
+      console.log(u)
+      res.status(201).json(u);
+    })
+    .catch(e =>{
+      console.log(e);
+      res.status(500).json({mesg:e});
+    })
 
-          // hash the password
-          const hash = bcryptjs.hashSync(credentials.password, rounds);
+      // if (isValid(credentials)) {
+      //     const rounds = process.env.BCRYPT_ROUNDS || 8;
 
-          credentials.password = hash;
+      //     // hash the password
+      //     const hash = bcryptjs.hashSync(credentials.password, rounds);
 
-          // save the user to the database
-          Users.add(credentials)
-            .then(user => {
-              res.status(201).json({ data: user });
-            })
-            .catch(error => {
-              res.status(500).json({ message: error.message });
-            });
-        } else {
-          res.status(400).json({
-            message: "please provide username and password and the password shoud be alphanumeric 400 post/register",
-          });
-        }
-  // res.end('implement register, please!');
+      //     credentials.password = hash;
+      //   console.log(credentials)
+      //     // save the user to the database
+      //     Users.add(credentials)
+      //       .then(user => {
+
+      //         next({ data: user });
+      //         // res.status(201).json({ data: user });
+      //       })
+      //       .catch(error => { 
+      //         res.status(500).json({ message: error.message, info: 'test' });
+      //         // res.end('implement register, please!');
+           
+      //       });
+      //   } else {
+      //     res.status(400).json({
+      //       message: "please provide username and password and the password shoud be alphanumeric 400 post/register",
+      //     });
+         
+      //   }
+  
 });
+
+
+router.get('/', (req,res) =>{
+
+  Users.find()
+    .then( u =>{
+      res.status(200).json(u);
+    })
+    .catch(e =>{
+      res.status(500).json({mesg:e})
+    })
+
+})
 
 router.post('/login', (req, res) => {
   res.end('implement login, please!');
