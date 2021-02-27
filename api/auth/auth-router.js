@@ -37,7 +37,7 @@ router.post("/register", (req, res,next) => {
   const credentials = req.body;
   console.log(credentials)
 
-  Users.add(req.body)
+  Users.add(credentials)
     .then(u =>{
       console.log(u)
       res.status(201).json(u);
