@@ -122,4 +122,5 @@ dist
 .vscode
 
 # Test db
+auth.db3
 test.db3

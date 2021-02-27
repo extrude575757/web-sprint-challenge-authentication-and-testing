@@ -74,6 +74,72 @@ Submit via Codegrade. Remember to add a query string to your Webhook's Payload U
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+
+The main difference is that sessions will do more work on a server than a client. And with Json web-token based applications most of the information is stored on the client to authenticate them instead of a server. A json webtoken will have information on the header payload and signature  while a json web-token is just a string of random alpha-numeric characters to partain to the sessions ID. It seems a session will have less sql to run as well since its only looking up an id, while json tokens are a hash which includes alot more information than just the session id. 
+
+Sessions are server oriented to take care of all the authentication. The client does not have much of an idea of what’s going on. After the user logs in, the server will create a session for the user and store the session data in the server memory.
+The session ID is stored in a cookie in the client’s browser. While the user stays logged in, the cookie would be sent along with each subsequent request.
+The server can then compare the session ID stored on the cookie against the session information stored in the memory to verify the user’s identity and send responses. On logging out, the session gets deleted from the database.
+
+  Json web tokens and sessions for authnetication are both HTTP enabled.
+  In a token-based application, the server creates a signed token and sends the token back to the client. The JWT is stored on the client’s side (usually in local storage) and sent as a header for every subsequent request.
+  The server would then decode the JWT, and, if the token is valid, processes the request and sends a response. When the user logs out, the token is destroyed on the client’s side without having any interaction with the server.
+
+  JSON Web Token (JWT) is an open standard (RFC 7519) for securely transmitting information between endpoints as JSON objects. It is mainly used to prove that the sent data was actually created by an authentic source.
+JWT consists of three concatenated Base64url-encoded strings, separated by dots (.). These are Header Payload and Signature
+A JWT typically looks like:
+ xxxxx.yyyyy.zzzzz
+Header
+The first part typically consists of two parts; the type of the token, which is JWT, and the signing algorithm being used such as HMAC SHA256 or RSA. If you don’t define the algorithm, it uses HS256 by default.
+For example:
+      {
+      “alg”: “HS256”,
+      “typ”: “JWT”
+      }
+Payload
+The second part consists of a set of claims that are basically verifiable security statements, such as the identity of the user and the permissions they are allowed.
+There are three types of claims: registered, public, and private claims. Note that the claim names are short as JWT is meant to be compact for fast requests.
+And wait! Be careful not to put sensitive data such as passwords in your payload as this can easily be decoded.
+An example payload could be:
+      {
+      “sub”: “123456789”,
+      “name”: “Anamika Ahmed”,
+      “admin”: true
+      }
+Signature
+The last part is the signature which is the sum of the encoded header, the encoded payload, a secret, and lastly, the algorithm which is specified in the header.
+For example, if you want to use the HS256 algorithm, the signature would be created in the following way:
+HS256(
+base64UrlEncode(header) + “.” +
+base64UrlEncode(payload),
+secret)
+The signature is used to verify the message wasn’t changed along the way. It is the most important part of the JWT structure as header and payload can easily be decoded, but not the signature.
+The signature is not publicly readable because it is encrypted with a secret key. Unless someone has the secret key, they cannot decrypt this information.
+
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+
+Bcrypt helps encrypt passwords with the blowfish algorithm. It will encrypt the whole cookie needed for the password into a random string of characters. When encryption is used with bcrypt it will be a string that looks like 
+
+    
+     $10
+$2b$[cost]$NLHSKLDHFLKSJDLSLDKFJL.SKDJFKJSLDKFJSLADKJFKLD
+algo cost  \  22  salt          /\  31 hash
+
+
+The $ and . (dot) seperate the contents of the bcrypt hash. The first section is the algorythm. The 2nd section is the cost which is where it tells the processor how many times to recursivly loop threw the hash. Increasing that can increase the security but will also increase the time needed to make it functional. The third part is the salt which is then seperated with the . (dot) to show what the hash is for that chipher. 
+
+
+
 3. How are unit tests different from integration and end-to-end testing?
+
+The main difference between integration testing and unit testing is unit tests are not flaky and are quicker tests than end-to-end testings. Its easier to know if something is broken or not since the tests are instant. 
+
+  Integration testing requires environment variables and is good for cross compatability while devloping. End-to-end tests are good at capturing certain kinds of bugs, but their biggest drawback is that they cannot pin-point the root cause of failure. Anything in the entire flow could have contributed to the error. In large and complex systems, it’s like finding a needle in the haystack: you’ll find the root cause, but it will take time. Because unit tests focus on small modules that are tested independently, they can identify the lines of code that caused the failure with laser-sharp accuracy, which can save a lot of time.
+
+Another nice thing about unit tests is that they always work, and they work fast. Unlike end-to-end tests that rely on external components, unit tests are not flaky. If I can build a project on my machine, I should be able to run its unit tests. In contrast, end-to-end tests would fail if some external component, like a database or a messaging queue, is not available or cannot be reached. And they can take a lvery ong time to run.
+
+Unit tests allow developers to refactor and add new features with confidence. When I’m refactoring a complex project that has well-written unit tests, I run them often, usually after every small change. In a matter of few seconds, I know whether I broke something or not. Even better, a failing test usually prints a nice message telling me what broke: whether some GuardAssertion failed or the expected response was off by one, helps me isolate the failure.
+
 4. How does _Test Driven Development_ change the way we write applications and tests?
+
+It helps to insure the code is doing what the code says it does. It is very important for debugging purposes since it can leave additional logs and error messages to find inside information on any bugs within the software. Test driven devlopment also speeds up the production of the application by automated tests that can be ran upon refresh. With testing end-users can be assured the application will run exactly as inteded. . 

@@ -1,7 +1,13 @@
 const router = require('express').Router();
+const bcryptjs = require("bcryptjs");
+const jwt = require('jsonwebtoken')
+// const router = require("express").Router();
+const { jwtSecret } = require('../../config/secrets.js')
+const Users = require("../users/users-model.js");
+const { isValid } = require("../users/users-service.js");
 
-router.post('/register', (req, res) => {
-  res.end('implement register, please!');
+
+  
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -26,7 +32,62 @@ router.post('/register', (req, res) => {
     4- On FAILED registration due to the `username` being taken,
       the response body should include a string exactly as follows: "username taken".
   */
+
+router.post("/register", (req, res,next) => {
+  const credentials = req.body;
+  console.log(credentials)
+
+  Users.add(credentials)
+    .then(u =>{
+      console.log(u)
+      res.status(201).json(u);
+    })
+    .catch(e =>{
+      console.log(e);
+      res.status(500).json({mesg:e});
+    })
+
+      // if (isValid(credentials)) {
+      //     const rounds = process.env.BCRYPT_ROUNDS || 8;
+
+      //     // hash the password
+      //     const hash = bcryptjs.hashSync(credentials.password, rounds);
+
+      //     credentials.password = hash;
+      //   console.log(credentials)
+      //     // save the user to the database
+      //     Users.add(credentials)
+      //       .then(user => {
+
+      //         next({ data: user });
+      //         // res.status(201).json({ data: user });
+      //       })
+      //       .catch(error => { 
+      //         res.status(500).json({ message: error.message, info: 'test' });
+      //         // res.end('implement register, please!');
+           
+      //       });
+      //   } else {
+      //     res.status(400).json({
+      //       message: "please provide username and password and the password shoud be alphanumeric 400 post/register",
+      //     });
+         
+      //   }
+  
 });
+
+
+router.get('/', (req,res) =>{
+
+  Users.find()
+    .then( u =>{
+      res.status(200).json(u);
+    })
+    .catch(e =>{
+      res.status(500).json({mesg:e})
+    })
+
+})
 
 router.post('/login', (req, res) => {
   res.end('implement login, please!');
